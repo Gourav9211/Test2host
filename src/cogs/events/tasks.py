@@ -19,9 +19,13 @@ class QuoTasks(Cog):
 
     @tasks.loop(count=1)
     async def insert_guilds(self):
-        query = "INSERT INTO guild_data (guild_id , prefix , embed_color , embed_footer) VALUES ($1 , $2 , $3, $4) ON CONFLICT DO NOTHING"
         for guild in self.bot.guilds:
-            await self.bot.db.execute(query, guild.id, config.PREFIX, config.COLOR, config.FOOTER)
+            guild_data = {
+                "prefix": config.PREFIX,
+                "color": config.COLOR,
+                "footer": config.FOOTER
+            }
+            await self.bot.db.set_guild_data(guild.id, guild_data)
 
     @insert_guilds.before_loop
     async def before_loops(self):

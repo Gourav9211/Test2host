@@ -17,20 +17,14 @@ from aiocache import cached
 from discord import AllowedMentions, Intents
 from discord.ext import commands
 from lru import LRU
-from tortoise import Tortoise
 
 import config as cfg
 import constants as csts
-from models import Guild, Timer
+from db_manager import ReplitDBManager
 
 from .cache import CacheManager
 from .Context import Context
 from .Help import HelpCommand
-
-
-async def init_db():
-    await Tortoise.init(config=cfg.TORTOISE)
-    # await Tortoise.generate_schemas()
 
 intents = Intents.default()
 intents.members = True
@@ -122,8 +116,8 @@ class Quotient(commands.AutoShardedBot):
 
     @property
     def db(self):
-        """to execute raw queries"""
-        return Tortoise.get_connection("default")._pool
+        """Replit database manager"""
+        return self._db_manager
 
     @property
     def prime_link(self):
@@ -137,17 +131,12 @@ class Quotient(commands.AutoShardedBot):
         return os.system("pm2 reload quotient")
 
     async def init_quo(self):
-        """Instantiating aiohttps ClientSession and telling tortoise to create relations"""
+        """Initialize bot with Replit database"""
         self.session = aiohttp.ClientSession(loop=self.loop)
-        await Tortoise.init(cfg.TORTOISE)
-        await Tortoise.generate_schemas(safe=True)
+        self._db_manager = ReplitDBManager()
 
         self.cache = CacheManager(self)
         await self.cache.fill_temp_cache()
-
-        # Initializing Models (Assigning Bot attribute to all models)
-        for mname, model in Tortoise.apps.get("models").items():
-            model.bot = self
 
     async def setup_hook(self) -> None:
         await self.init_quo()
@@ -163,12 +152,15 @@ class Quotient(commands.AutoShardedBot):
         guild = self.cache.guild_data.get(message.guild.id)
         if guild:
             prefix = guild.get("prefix")
-
         else:
+            # Get from Replit database
+            guild_data = await self.db.get_guild_data(message.guild.id)
+            prefix = guild_data.get("prefix", "q")
+            
             self.cache.guild_data[message.guild.id] = {
-                "prefix": "q",
-                "color": self.color,
-                "footer": cfg.FOOTER,
+                "prefix": prefix,
+                "color": guild_data.get("color", self.color),
+                "footer": guild_data.get("footer", cfg.FOOTER),
             }
 
         prefix = prefix or "q"
@@ -193,10 +185,8 @@ class Quotient(commands.AutoShardedBot):
             except:
                 pass
 
-        try:
-            await Tortoise.close_connections()
-        except:
-            pass
+        # Replit DB doesn't need explicit connection closing
+        pass
 
     def get_message(self, message_id: int) -> Optional[discord.Message]:
         """Gets the message from the cache"""
@@ -223,10 +213,9 @@ class Quotient(commands.AutoShardedBot):
         self.cmd_invokes += 1
         await csts.show_tip(ctx)
         await csts.remind_premium(ctx)
-        await self.db.execute(
-            "INSERT INTO user_data (user_id) VALUES ($1) ON CONFLICT DO NOTHING",
-            ctx.author.id,
-        )
+        # Store user data in Replit DB
+        user_data = await self.db.get_user_data(ctx.author.id)
+        await self.db.set_user_data(ctx.author.id, user_data)
 
     async def on_ready(self):
         print(f"[Quotient] Logged in as {self.user.name}({self.user.id})")
