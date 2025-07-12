@@ -1,9 +1,3 @@
-# for tortoise-orm
-
-TORTOISE = {}
-
-
-POSTGRESQL = {}
 
 EXTENSIONS = ()
 
