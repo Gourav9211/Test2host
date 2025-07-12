@@ -441,3 +441,4 @@ bot = Quotient()
 async def bot_before_invoke(ctx: Context):
     if ctx.guild is not None and not ctx.guild.chunked:
         bot.loop.create_task(ctx.guild.chunk())
+await Tortoise.init(config=cfg.TORTOISE)
