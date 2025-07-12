@@ -178,12 +178,25 @@ class Quotient(commands.AutoShardedBot):
         )(self, message)
 
     async def close(self) -> None:
-        await super().close()
+        try:
+            await super().close()
+        except AttributeError:
+            # Handle case where bot wasn't fully initialized
+            if hasattr(self, '_connection') and self._connection:
+                await self._connection.close()
+        except Exception as e:
+            print(f"Error during bot close: {e}")
 
         if hasattr(self, "session"):
-            await self.session.close()
+            try:
+                await self.session.close()
+            except:
+                pass
 
-        await Tortoise.close_connections()
+        try:
+            await Tortoise.close_connections()
+        except:
+            pass
 
     def get_message(self, message_id: int) -> Optional[discord.Message]:
         """Gets the message from the cache"""
