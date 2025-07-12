@@ -1,9 +1,17 @@
 # for tortoise-orm
+TORTOISE = {
+    "connections": {"default": "sqlite://data.db"},
+    "apps": {
+        "models": {
+            "models": ["aerich.models"],  # adjust to your actual models
+            "default_connection": "default",
+        }
+    }
+}
 
-TORTOISE = {}
-
-
-POSTGRESQL = {}
+POSTGRESQL = {
+    "connections": {"default": "sqlite://data.db"},  # or empty if not used
+}
 EXTENSIONS = ()
 
 DISCORD_TOKEN = "MTM5MjU1NDI4MzkwNzQyMDE2MA.GK9YcE.LyDpx4EruGw2j6pSpWaSxZTJ1oR2eMMDWT1qo4"
