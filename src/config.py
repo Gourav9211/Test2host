@@ -1,0 +1,25 @@
+
+EXTENSIONS = ()
+
+DISCORD_TOKEN = "MTM5MjU1NDI4MzkwNzQyMDE2MA.GK9YcE.LyDpx4EruGw2j6pSpWaSxZTJ1oR2eMMDWT1qo4"
+
+COLOR = 0x00FFB3
+
+FOOTER = "quo is lub!"
+
+PREFIX = "q"
+
+SERVER_LINK = ""
+
+BOT_INVITE = ""
+
+WEBSITE = ""
+
+REPOSITORY = ""
+
+DEVS = ()
+
+# LOGS
+SHARD_LOG = ""
+ERROR_LOG = ""
+PUBLIC_LOG = ""
