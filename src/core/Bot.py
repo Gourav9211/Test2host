@@ -44,6 +44,7 @@ on_startup: List[Callable[["Quotient"], Coroutine]] = []
 
 class Quotient(commands.AutoShardedBot):
     def __init__(self, **kwargs: Any) -> None:
+        # Initialize parent class first
         super().__init__(
             command_prefix=self.get_prefix,
             intents=intents,
@@ -58,7 +59,7 @@ class Quotient(commands.AutoShardedBot):
             **kwargs,
         )
 
-        self.loop = asyncio.get_event_loop()
+        # Set custom attributes after parent initialization
         self.start_time = datetime.now(tz=csts.IST)
         self.cmd_invokes = 0
         self.seen_messages = 0
