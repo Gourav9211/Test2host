@@ -68,7 +68,6 @@ class Quotient(commands.AutoShardedBot):
 
         self.lockdown: bool = False
         self.lockdown_msg: Optional[str] = None
-        self._BotBase__cogs = commands.core._CaseInsensitiveDict()
 
         self.message_cache: Dict[int, Any] = LRU(1024)  # type: ignore
 
