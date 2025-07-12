@@ -1,4 +1,9 @@
+# for tortoise-orm
 
+TORTOISE = {}
+
+
+POSTGRESQL = {}
 EXTENSIONS = ()
 
 DISCORD_TOKEN = "MTM5MjU1NDI4MzkwNzQyMDE2MA.GK9YcE.LyDpx4EruGw2j6pSpWaSxZTJ1oR2eMMDWT1qo4"
