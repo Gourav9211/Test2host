@@ -3,6 +3,19 @@ run = "uvicorn undefined:app --host 0.0.0.0 --port 3000"
 
 [nix]
 channel = "stable-24_05"
+packages = ["cacert", "freetype", "gettext", "lcms2", "libgit2", "libimagequant", "libjpeg", "libsodium", "libtiff", "libwebp", "libxcrypt", "openjpeg", "postgresql", "tcl", "tk", "zlib"]
 
 [deployment]
 run = ["sh", "-c", "uvicorn undefined:app --host 0.0.0.0 --port 3000"]
+
+[workflows]
+runButton = "Start Bot"
+
+[[workflows.workflow]]
+name = "Start Bot"
+author = 44919244
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python src/bot.py"
