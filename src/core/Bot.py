@@ -156,7 +156,7 @@ class Quotient(commands.AutoShardedBot):
             # Get from Replit database
             guild_data = await self.db.get_guild_data(message.guild.id)
             prefix = guild_data.get("prefix", "q")
-            
+
             self.cache.guild_data[message.guild.id] = {
                 "prefix": prefix,
                 "color": guild_data.get("color", self.color),

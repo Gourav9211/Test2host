@@ -12,7 +12,8 @@ class BaseDbModel(Model):
     class Meta:
         abstract = True
 
-    bot: Quotient
+# Note: BaseDbModel is kept for compatibility but will be phased out
+# as we migrate to Replit DB
 
 from .esports import *
 from .misc import *

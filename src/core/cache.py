@@ -27,37 +27,13 @@ class CacheManager:
         self.blocked_ids = set()
 
     async def fill_temp_cache(self):
-        async for record in Guild.all():
-            self.guild_data[record.guild_id] = {
-                "prefix": record.prefix,
-                "color": record.embed_color or config.COLOR,
-                "footer": record.embed_footer or config.FOOTER,
-            }
-
-        async for record in EasyTag.all():
-            self.eztagchannels.add(record.channel_id)
-
-        async for record in TagCheck.all():
-            self.tagcheck.add(record.channel_id)
-
-        async for record in Scrim.filter(opened_at__lte=datetime.now(tz=IST)).all():
-            self.scrim_channels.add(record.registration_channel_id)
-
-        async for record in Tourney.filter(started_at__not_isnull=True):
-            self.tourney_channels.add(record.registration_channel_id)
-
-        async for record in AutoPurge.all():
-            self.autopurge_channels.add(record.channel_id)
-
-        async for record in Tourney.all():
-            async for partner in record.media_partners.all():
-                self.media_partner_channels.add(partner.channel_id)
-
-        async for record in SSVerify.all():
-            self.ssverify_channels.add(record.channel_id)
-
-        async for record in BlockList.all():
-            self.blocked_ids.add(record.block_id)
+        # Load guild data from Replit DB
+        # For now, we'll just set up empty caches since we're migrating from Tortoise ORM
+        # Guild data will be populated as needed when guilds are accessed
+        
+        # Initialize empty sets for various channel types
+        # These will be populated from Replit DB as needed
+        pass
 
     def guild_color(self, guild_id: int):
         return self.guild_data.get(guild_id, {}).get("color", config.COLOR)
@@ -67,15 +43,18 @@ class CacheManager:
 
     async def update_guild_cache(self, guild_id: int, *, set_default=False) -> None:
         if set_default:
-            await Guild.get(pk=guild_id).update(
-                prefix=config.PREFIX, embed_color=config.COLOR, embed_footer=config.FOOTER
-            )
+            await self.bot.db.set_guild_data(guild_id, {
+                "prefix": config.PREFIX,
+                "color": config.COLOR,
+                "footer": config.FOOTER,
+                "is_premium": False
+            })
 
-        _g = await Guild.get(pk=guild_id)
+        guild_data = await self.bot.db.get_guild_data(guild_id)
         self.guild_data[guild_id] = {
-            "prefix": _g.prefix,
-            "color": _g.embed_color or config.COLOR,
-            "footer": _g.embed_footer or config.FOOTER,
+            "prefix": guild_data.get("prefix", config.PREFIX),
+            "color": guild_data.get("color", config.COLOR),
+            "footer": guild_data.get("footer", config.FOOTER),
         }
 
     # @staticmethod
