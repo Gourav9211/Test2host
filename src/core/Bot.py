@@ -26,6 +26,12 @@ from models import Guild, Timer
 from .cache import CacheManager
 from .Context import Context
 from .Help import HelpCommand
+from tortoise import Tortoise
+import config as cfg
+
+async def init_db():
+    await Tortoise.init(config=cfg.TORTOISE)
+    # await Tortoise.generate_schemas()
 
 intents = Intents.default()
 intents.members = True
@@ -136,6 +142,7 @@ class Quotient(commands.AutoShardedBot):
         self.session = aiohttp.ClientSession(loop=self.loop)
         await Tortoise.init(cfg.TORTOISE)
         await Tortoise.generate_schemas(safe=True)
+        await init_db()
 
         self.cache = CacheManager(self)
         await self.cache.fill_temp_cache()
