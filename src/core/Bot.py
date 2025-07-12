@@ -437,8 +437,23 @@ class Quotient(commands.AutoShardedBot):
 bot = Quotient()
 
 
+# if you have your bot object, e.g., bot = commands.Bot(...) keep it here
+# from discord.ext import commands
+# bot = commands.Bot(...)
+
+async def init_db():
+    await Tortoise.init(config=cfg.TORTOISE)
+    # optional: await Tortoise.generate_schemas()
+
+async def main():
+    await init_db()
+    await bot.start(cfg.DISCORD_TOKEN)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
 @bot.before_invoke
 async def bot_before_invoke(ctx: Context):
     if ctx.guild is not None and not ctx.guild.chunked:
         bot.loop.create_task(ctx.guild.chunk())
-await Tortoise.init(config=cfg.TORTOISE)
