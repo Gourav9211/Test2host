@@ -338,7 +338,8 @@ class SMError(Cog):
 
     @Cog.listener()
     async def on_scrim_cmd_log(self, **kwargs):
-        ...
+        # Log scrim command usage
+        pass
 
     @Cog.listener()
     async def on_guild_channel_delete(self, channel: discord.TextChannel):

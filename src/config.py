@@ -12,9 +12,18 @@ TORTOISE = {
 POSTGRESQL = {
     "connections": {"default": "sqlite://data.db"},  # or empty if not used
 }
-EXTENSIONS = ()
+EXTENSIONS = (
+    "cogs.events",
+    "cogs.esports",
+    "cogs.mod", 
+    "cogs.premium",
+    "cogs.quomisc",
+    "cogs.reminder",
+    "cogs.utility",
+)
 
-DISCORD_TOKEN = "MTM5MjU1NDI4MzkwNzQyMDE2MA.GK9YcE.LyDpx4EruGw2j6pSpWaSxZTJ1oR2eMMDWT1qo4"
+import os
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
 COLOR = 0x00FFB3
 

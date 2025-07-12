@@ -26,15 +26,6 @@ from models import Guild, Timer
 from .cache import CacheManager
 from .Context import Context
 from .Help import HelpCommand
-from tortoise import Tortoise
-import config as cfg
-
-async def main():
-    await init_db()
-    await bot.start(cfg.DISCORD_TOKEN)
-
-if __name__ == "__main__":
-    asyncio.run(main())
 
 
 async def init_db():
@@ -150,7 +141,6 @@ class Quotient(commands.AutoShardedBot):
         self.session = aiohttp.ClientSession(loop=self.loop)
         await Tortoise.init(cfg.TORTOISE)
         await Tortoise.generate_schemas(safe=True)
-        await init_db()
 
         self.cache = CacheManager(self)
         await self.cache.fill_temp_cache()
@@ -435,22 +425,6 @@ class Quotient(commands.AutoShardedBot):
 
 
 bot = Quotient()
-
-
-# if you have your bot object, e.g., bot = commands.Bot(...) keep it here
-# from discord.ext import commands
-# bot = commands.Bot(...)
-
-async def init_db():
-    await Tortoise.init(config=cfg.TORTOISE)
-    # optional: await Tortoise.generate_schemas()
-
-async def main():
-    await init_db()
-    await bot.start(cfg.DISCORD_TOKEN)
-
-if __name__ == "__main__":
-    asyncio.run(main())
 
 
 @bot.before_invoke
