@@ -29,6 +29,14 @@ from .Help import HelpCommand
 from tortoise import Tortoise
 import config as cfg
 
+async def main():
+    await init_db()
+    await bot.start(cfg.DISCORD_TOKEN)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
 async def init_db():
     await Tortoise.init(config=cfg.TORTOISE)
     # await Tortoise.generate_schemas()
